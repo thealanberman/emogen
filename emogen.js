@@ -16,13 +16,12 @@ function randomBetween(min,max,seed)
 }
 
 function getEmoBandName() {
-  var joiners = ["The", "At", "In", "And", "On", "Of", "With"];
+  var joiners = ["The", "At", "In", "And", "On", "Of", "With", "Between"];
   var prefixes = ["Hey", "My", "Your", "Our", "The", "Between", "Since The", "A", "And", "New", "Old", "At", "In", "Into", "Inside", "Near", "Of", "On", "Outside", "Over", "With", "Within", "Without", "Around", "Besides", "Beside", "After", "Against", "Off", "During", "Down", "Like", "Near", "Along", "Beneath", "Under", "Toward", "Till", "Up", "Until", "Through", "Throughout", "Except", "For", "From", "Past", "Burning", "Sleeping", "Further"];
   var nouns = ["Ring", "Promise", "Texas", "New York", "Music", "Hearts", "Kids", "Surprise", "Reason", "Kentucky", "Oklahoma", "Mississippi", "Rangers", "Fence", "Cap'n", "Mandy", "Chester", "Jimmy", "Johnny", "Jazz", "Experiment", "Drive", "North", "South", "East", "West", "Coalition", "New", "Boys", "Girls", "Plan", "Disco", "Star", "Maplewood", "Orange", "Mercedes", "Omaha", "Hoboken", "Newark", "Ho-Ho-Kus", "Second", "Asbury", "Trenton", "Cherry Hill", "Morrisville", "Elizabeth", "Morristown", "Clifton", "Hackettstown", "Theory", "Juliana", "Joan", "Parade", "Romance", "Hayward", "Fremont", "Pittsburg", "Josie", "Ethel", "Aberdeen", "Barnegat", "Belleville", "Bergenfield", "Berkeley", "Bloomfield", "Camden", "Cliffside Park", "Edison", "Englewood", "Fort Lee", "Jackson", "Keansburg", "Kearny", "Hackensack", "Glen Rock", "Middlesex", "Millburn", "Montclair", "Lumberton", "Lyndhurst", "Passaic", "Roseville", "Pine Hill", "Rutherford", "Saddle Brook", "Teaneck", "Secaucus", "Warren", "Wayne", "Weehawken", "Winslow", "Woodbridge", "Windsor"];
   var timeunits = ["Sunday", "Day", "Night", "Year", "Week", "Month", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "January", "February", "March", "April", "May", "June", "July", "August", "September", "November", "December", "Winter", "Spring", "Summer", "Autumn", "Mid-Winter", "Indian Summer", "Evening", "Morning", "Afternoon", "Mid-Morning", "Twilight", "Dusk", "Sunrise", "Sunset"];
 
   var fullName = document.getElementById("fullName").value;
-  console.log("fullname = " + fullName);
 
   // initialize array which will become the emo band name
   var emoBand = [];
@@ -30,44 +29,58 @@ function getEmoBandName() {
 
   if(fullName.length == 0) {
     fullName = Math.random().toString(36).substring(2);
-  }
+    console.log("fullname = " + fullName);
+}
 
   if (fullName.length > 0) {
+    // Preselect prefix, joiner, noun and timeunit from their respective lists
     var prefix = prefixes[randomBetween(0,prefixes.length-1,fullName)];
     var joiner = joiners[randomBetween(0,joiners.length-1,fullName)];
     var noun = nouns[randomBetween(0,nouns.length-1,fullName)];
     var timeunit = timeunits[randomBetween(0,timeunits.length-1,fullName)];
 
+    // The "magicnumber" between 1 and 100 will determine the emo band name
+    var magicnumber = randomBetween(1,100,fullName);
+    console.log("magicnumber = " + magicnumber);
+
     // base noun
     emoBand.push(noun);
     console.log("emoBand base noun= " + emoBand);
 
-    // prefix?
-    if (randomBetween(0,4,fullName) > 1) {
-      emoBand.splice(0,0,prefixes[prefixrnd]);
-      console.log("emoBand="+emoBand);
+    // 75% chance of prefix
+    if (magicnumber > 25) {
+      emoBand.splice(0,0,prefix);
     }
+    console.log("emoBand after prefix roll = " + emoBand);
 
-    // incorporate time unit?
-    // 50/50 odds
-    if (randomBetween(0,1,fullName) == 0) { // Use a time unit
-      if (randomBetween(0,2,fullName) > 1) { // Time unit is suffix
-          if (randomBetween(4,8,fullName) > 5) { // Use a joiner
-            emoBand.push(joiners[joinrnd]);
-            console.log("time as suffix, with joiner = "+emoBand);
-          }
-          emoBand.push(timeunits[timernd]);
-          console.log("time suffix true, no joiner = " + emoBand);
+    if (magicnumber < 50) { // Use a time unit? 50% odds
+      console.log("Time unit true.");
+      if ((magicnumber % 2) == 0) { // Time unit is suffix? 50% odds
+        console.log("magicnumber = " + magicnumber + "Time unit is a suffix.")
+        if (/[io]/.test(fullName)) { // Use a joiner? only if fullName has 'i' or 'o' in it.
+          emoBand.push(joiner);
+          console.log("fullName has i or o. time as suffix, with joiner = " + emoBand);
+        }
+        emoBand.push(timeunit);
+        console.log("time as suffix, no joiner = " + emoBand);
       }
     } else { // Time Unit is a prefix
+      console.log("Time unit is a prefix.");
       // use a joiner?
       if (randomBetween(0,2,fullName) == 0) {
-				emoBand.splice(0,0,joiners[joinrnd]);
+				emoBand.splice(0,0,joiner);
 			}
-      emoBand.splice(0,0,timeunits[timernd]);
-      console.log("emoBand="+emoBand);
+      emoBand.splice(0,0,timeunit);
+      console.log("emoBand=" + emoBand );
     }
   }
+
+  // Band names should be sentence fragments. Final check to avoid 1 word results.
+  if (emoBand.length == 1) {
+    emoBand.splice(0,0,prefix);
+    emoBand.splice(0,0,joiner);
+  }
+
   return "Your emo band name is: " + emoBand.join(' ');
 }
 
