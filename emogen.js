@@ -80,7 +80,7 @@ function getEmoBandName() {
     emoBand.splice(0, 0, joiner);
   }
 
-  return "Your emo band name is: " + emoBand.join(' ');
+  return "Your emo band name is: <span style='font-weight: bold;'>" + emoBand.join(' ') + "</span>";
 }
 
 // CODE BELOW implements the "seedrandom()" function
